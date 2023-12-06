@@ -3,6 +3,7 @@
 
 struct node {
     int vertex;
+    int weight;
     struct node* next;
 };
 struct node* createNode(int v) {
@@ -35,11 +36,13 @@ void addEdge(struct Graph* graph, int a, int b, int w) {
     // edge from a to b
     struct node* newNode = createNode(b);
     newNode -> next = graph -> adjLists[a];
+    newNode -> weight = w;
     graph -> adjLists[a] = newNode;
 
     // edge from b to a
     newNode = createNode(a);
     newNode -> next  = graph -> adjLists[b];
+    newNode -> weight = w;
     graph -> adjLists[b] = newNode;
 }
 
@@ -48,7 +51,7 @@ void displayGraph(struct Graph* graph) {
         struct node* temp = graph -> adjLists[v];
         printf("\nVertex %d\n", v);
         while (temp) {
-            printf("%d ", temp -> vertex);
+            printf("%d/%d", temp -> vertex, temp -> weight);
             if(temp -> next) {
                 printf("-> ");
             }
@@ -82,7 +85,11 @@ int main() {
             break;
         }
 
-        addEdge(graph, a, b);
+        int w;
+        printf("Enter the weight of the edge: ");
+        scanf("%d", &w);
+
+        addEdge(graph, a, b, w);
     }
 
     displayGraph(graph);
