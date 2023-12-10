@@ -1,11 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int getArraySize(int* arr)
-{
-    return sizeof(arr) / sizeof(int);
-}
-
 int* create_exp(int n)
 {
     int* exp = (int*)malloc(n*2*sizeof(int));
@@ -24,10 +19,10 @@ int* create_exp(int n)
     return exp;
 }
 
-int* sum(int* A, int* B)
+int* sum(int* A, int* B, int sizeA, int sizeB)
 {
-    int sizeA = getArraySize(A);
-    int sizeB = getArraySize(B);
+    sizeA *= 2;
+    sizeB *= 2;
 
     int* res = (int*)malloc((sizeA + sizeB) * sizeof(int));
     for(int i = 0; i < (sizeA + sizeB); i++)
@@ -51,13 +46,21 @@ int* sum(int* A, int* B)
         }
         else
         {
+            int isFound = 0;
             for(int j = 0; j < sizeA; j+=2)
             {
-                if(B[i-sizeA] != A[j])
+                
+                if(B[i-sizeA] == res[j])
                 {
-                    res[i] = B[i-sizeA];
-                    res[i+1] = B[i-sizeA + 1];
+                    isFound = 1;
+                    break;
                 }
+            }
+
+            if(isFound == 0)
+            {
+                res[i] = B[i-sizeA];
+                res[i+1] = B[i-sizeA + 1];
             }
         }
     }
@@ -65,10 +68,9 @@ int* sum(int* A, int* B)
     return res;
 }
 
-void displayPoly(int* A)
+void displayPoly(int* A, int size)
 {
-    int size = getArraySize(A);
-
+    size *= 2;
     for(int i = 0; i < size; i+=2)
     {
         if(A[i] == -1)
@@ -76,7 +78,7 @@ void displayPoly(int* A)
             break;
         }
         printf("%dx^%d ", A[i+1], A[i]);
-        if(i < size - 2)
+        if(i < size - 2 && A[i+2] != -1)
         {
             printf("+ ");
         }
@@ -86,24 +88,24 @@ void displayPoly(int* A)
 
 int main()
 {
-    int n;
+    int m, n;
 
     printf("Enter the number of terms for the first expression: ");
-    scanf("%d", &n);
-    int* expA = create_exp(n);
+    scanf("%d", &m);
+    int* expA = create_exp(m);
 
     printf("\nEnter the number of terms for the second expression: ");
     scanf("%d", &n);
     int* expB = create_exp(n);
 
-    int* res = sum(expA, expB);
+    int* res = sum(expA, expB, m, n);
 
     printf("\nPolynomial 1: ");
-    displayPoly(expA);
+    displayPoly(expA, m);
     printf("\nPolynomial 2: ");
-    displayPoly(expB);
+    displayPoly(expB, n);
     printf("\nSum: ");
-    displayPoly(res);
+    displayPoly(res, m+n);
 
     return 0;
 }
