@@ -30,6 +30,7 @@ int* sum(int* A, int* B, int sizeA, int sizeB)
         res[i] = -1;
     }
 
+    int k = sizeA;
     for(int i = 0; i < (sizeA + sizeB); i+=2)
     {
         if(i < sizeA)
@@ -59,8 +60,9 @@ int* sum(int* A, int* B, int sizeA, int sizeB)
 
             if(isFound == 0)
             {
-                res[i] = B[i-sizeA];
-                res[i+1] = B[i-sizeA + 1];
+                res[k] = B[i-sizeA];
+                res[k+1] = B[i-sizeA + 1];
+                k += 2;
             }
         }
     }
