@@ -22,7 +22,7 @@ void printExp(struct term* Term)
 {
     while(1)
     {
-        if(Term -> coeff != 1 && Term -> coeff != 0) {
+        if(Term -> coeff != 0) {
             if(Term -> coeff > 0)
                 printf("%d", Term -> coeff);
             else
