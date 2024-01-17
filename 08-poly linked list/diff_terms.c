@@ -49,6 +49,11 @@ void diff(struct term* Term)
     {
         Term -> coeff *= Term -> pow;
         Term -> pow -= 1;
+        
+        if(Term -> next -> pow == 0)
+        {
+        	Term -> next = Term -> next -> next;
+        }
 
         if(Term -> next == NULL)
         {
