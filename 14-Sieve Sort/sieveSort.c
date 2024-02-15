@@ -52,19 +52,58 @@ void displayList(struct subArr* head) {
 void sort(struct subArrList* head, int dir) {
     struct subArrList* iterator = head;
     struct subArrList* newHead = NULL;
-    struct subArrList* newIterator;
+    struct subArrList* newIterator = NULL;
 
     while(1) {
         struct subArr* list = iterator -> list;
-        struct subArr* newList;
+        struct subArr* newList = NULL;
 
         if(dir == 0) {
             int comp = list -> key;
+            newList = createNode(comp, newList);
+
+            if(newIterator == NULL) {
+                newIterator = createNodeList(newList);
+                newHead = newIterator;
+            }
+            else {
+                newIterator = head;
+                while(newIterator -> next != NULL) {
+                    newIterator = newIterator -> next;
+                }
+                newIterator -> next = createNodeList(newList);
+                newIterator = newIterator -> next;
+            }
+
             list = list -> next;
 
             while(list != NULL) {
-                if(list -> key < comp) {
+                if(list -> key <= comp) {
+                    newList -> next = createNode(list -> key, newList);
+                    newList = newList -> next;
+                    list = list -> next;
+                }
+                else {
+                    newIterator = newHead;
+                    bool isAssigned = false;
+                    while(newIterator != NULL) {
+                        if(list -> key < newIterator -> list -> key) {
+                            struct subArr* tempA = newIterator -> list;
+                            while(tempA -> next != NULL) {
+                                tempA = tempA -> next;
+                            }
+                            tempA -> next = createNode(list -> key, tempA);
+                            isAssigned = true;
+                            break;
+                        }
+                        else {
+                            newIterator = newIterator -> next;
+                        }
+                    }
 
+                    if(!isAssigned) {
+                        
+                    }
                 }
             }
         }
