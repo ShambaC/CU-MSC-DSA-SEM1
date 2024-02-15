@@ -86,7 +86,7 @@ void sort(struct subArrList* head, int dir) {
                 else {
                     newIterator = newHead;
                     bool isAssigned = false;
-                    while(newIterator != NULL) {
+                    while(1) {
                         if(list -> key < newIterator -> list -> key) {
                             struct subArr* tempA = newIterator -> list;
                             while(tempA -> next != NULL) {
@@ -96,13 +96,16 @@ void sort(struct subArrList* head, int dir) {
                             isAssigned = true;
                             break;
                         }
-                        else {
+                        else if(newIterator -> next != NULL) {
                             newIterator = newIterator -> next;
+                            continue;
                         }
+                        break;
                     }
 
                     if(!isAssigned) {
-                        
+                        newIterator -> next = createNodeList(createNode(list -> key, NULL));
+                        newIterator = newIterator -> next;
                     }
                 }
             }
