@@ -199,12 +199,18 @@ int main()
         scanf("%d", &key);
 
         root = insertNode(root, key);
+        printf("Tree now: \n");
+        printPreOrder(root);
+        printf("\n");
     }
 
-    printPreOrder(root);
-
     //del
-    root = deleteNode(root, 3);
+    int key;
+    printf("Enter node to delete: ");
+    scanf("%d", &key);
+    root = deleteNode(root, key);
+    printf("Tree after deletion: \n");
+    printPreOrder(root);
 
     return 0;
 }
