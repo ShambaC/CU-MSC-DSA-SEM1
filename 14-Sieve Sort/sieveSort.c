@@ -2,115 +2,197 @@
 #include<stdlib.h>
 #include<stdbool.h>
 
-struct subArr {
+typedef struct subList {
     int key;
+    struct subList* prev;
+    struct subList* next;
+} SubArray;
 
-    struct subArr* prev;
-    struct subArr* next;
-};
+typedef struct superList {
+    SubArray* list;
+    struct superList* next;
+} SuperArray;
 
-struct subArrList {
-    struct subArr* list;
-    struct subArrList* next;
-};
+SubArray* createSubNode(int data) {
+    SubArray* temp = (SubArray*) malloc(sizeof(SubArray));
 
-struct subArr* createNode(int key, struct subArr* prev) {
-    struct subArr* term = (struct subArr*) malloc(sizeof(struct subArr));
+    temp -> key = data;
+    temp -> prev = NULL;
+    temp -> next = NULL;
 
-    if(prev != NULL)    prev -> next = term;
-
-    term -> key = key;
-    term -> prev = prev;
-    term -> next = NULL;
-
-    return term;
+    return temp;
 }
 
-struct subArrList* createNodeList(struct subArr* node) {
-    struct subArrList* term = (struct subArrList*) malloc(sizeof(struct subArrList));
+SubArray* appendSubNode(SubArray* head, SubArray* node) {
+    if(head == NULL) {
+        head = node;
+        return head;
+    }
 
-    term -> list = node;
-    term -> next = NULL;
+    SubArray* tmp = head;
+    while(head -> next != NULL)
+    {
+        head = head -> next;
+    }
 
-    return term;
+    head -> next = node;
+    node -> prev = head;
+
+    return tmp;
 }
 
-void displayList(struct subArr* head) {
-    while(1) {
+int lenSubNode(SubArray* head) {
+    int size = 0;
+    while(head != NULL) {
+        head = head -> next;
+        size++;
+    }
+
+    return size;
+}
+
+void displaySubList(SubArray* head) {
+    while(true) {
         printf("%d", head -> key);
 
-        if(head -> next == NULL)
+        if(head -> next == NULL) {
             break;
-        
+        }
+
         printf("->");
         head = head -> next;
     }
     printf("\n");
 }
 
-// dir = 0 => left to right, dir = 1 => right to left
-void sort(struct subArrList* head, int dir) {
-    struct subArrList* iterator = head;
-    struct subArrList* newHead = NULL;
-    struct subArrList* newIterator = NULL;
+SuperArray* createSuperNode(SubArray* list) {
+    SuperArray* temp = (SuperArray*) malloc(sizeof(SuperArray));
 
-    while(1) {
-        struct subArr* list = iterator -> list;
-        struct subArr* newList = NULL;
+    temp -> list = list;
+    temp -> next = NULL;
 
+    return temp;
+}
+
+SuperArray* appendSuperNode(SuperArray* head, SuperArray* node) {
+    if(head == NULL) {
+        head = node;
+        return head;
+    }
+
+    SuperArray* tmp = head;
+
+    while(head -> next != NULL)
+    {
+        head = head -> next;
+    }
+
+    head -> next = node;
+
+    return tmp;
+}
+
+int lenSuperNode(SuperArray* head) {
+    int size = 0;
+    while(head != NULL) {
+        head = head -> next;
+        size++;
+    }
+
+    return size;
+}
+
+void displaySuperList(SuperArray* head) {
+    while(true) {
+        displaySubList(head -> list);
+
+        if(head -> next == NULL)
+        {
+            break;
+        }
+
+        head = head -> next;
+    }
+    printf("\n");
+}
+
+SuperArray* Sort(SuperArray* superlist, int size, int dir) {
+    printf("SuperList now: \n");
+    displaySuperList(superlist);
+
+    if(lenSuperNode(superlist) == size) {
+        return superlist;
+    }
+
+    SuperArray* newSuperList = NULL;
+
+    while(superlist != NULL) {
+        SubArray* sublistExtracted = superlist -> list;
         if(dir == 0) {
-            int comp = list -> key;
-            newList = createNode(comp, newList);
+            SubArray* newTempSubNode = createSubNode(sublistExtracted -> key);
+            newSuperList = appendSuperNode(newSuperList, createSuperNode(newTempSubNode));
 
-            if(newIterator == NULL) {
-                newIterator = createNodeList(newList);
-                newHead = newIterator;
-            }
-            else {
-                newIterator = head;
-                while(newIterator -> next != NULL) {
-                    newIterator = newIterator -> next;
-                }
-                newIterator -> next = createNodeList(newList);
-                newIterator = newIterator -> next;
-            }
+            sublistExtracted = sublistExtracted -> next;
+            while(sublistExtracted != NULL) {
+                int ele = sublistExtracted -> key;
+                bool isAssigned = false;
 
-            list = list -> next;
-
-            while(list != NULL) {
-                if(list -> key <= comp) {
-                    newList -> next = createNode(list -> key, newList);
-                    newList = newList -> next;
-                    list = list -> next;
-                }
-                else {
-                    newIterator = newHead;
-                    bool isAssigned = false;
-                    while(1) {
-                        if(list -> key < newIterator -> list -> key) {
-                            struct subArr* tempA = newIterator -> list;
-                            while(tempA -> next != NULL) {
-                                tempA = tempA -> next;
-                            }
-                            tempA -> next = createNode(list -> key, tempA);
-                            isAssigned = true;
-                            break;
-                        }
-                        else if(newIterator -> next != NULL) {
-                            newIterator = newIterator -> next;
-                            continue;
-                        }
+                SuperArray* tempNewSuperIterator = newSuperList;
+                while (tempNewSuperIterator != NULL)
+                {
+                    if(ele < tempNewSuperIterator -> list -> key) {
+                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele));
+                        isAssigned = true;
                         break;
                     }
 
-                    if(!isAssigned) {
-                        newIterator -> next = createNodeList(createNode(list -> key, NULL));
-                        newIterator = newIterator -> next;
-                    }
+                    tempNewSuperIterator = tempNewSuperIterator -> next;
                 }
+
+                if(!isAssigned) {
+                    newSuperList = appendSuperNode(newSuperList, createSuperNode(createSubNode(ele)));
+                }
+                
+                sublistExtracted = sublistExtracted -> next;
             }
         }
+        else if(dir == 1) {
+            while(sublistExtracted -> next != NULL) {
+                sublistExtracted = sublistExtracted -> next;
+            }
+
+            SubArray* newTempSubNode = createSubNode(sublistExtracted -> key);
+            newSuperList = appendSuperNode(newSuperList, createSuperNode(newTempSubNode));
+
+            sublistExtracted = sublistExtracted -> prev;
+            while(sublistExtracted != NULL) {
+                int ele = sublistExtracted -> key;
+                bool isAssigned = false;
+
+                SuperArray* tempNewSuperIterator = newSuperList;
+                while (tempNewSuperIterator != NULL)
+                {
+                    if(ele < tempNewSuperIterator -> list -> key) {
+                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele));
+                        isAssigned = true;
+                        break;
+                    }
+
+                    tempNewSuperIterator = tempNewSuperIterator -> next;
+                }
+
+                if(!isAssigned) {
+                    newSuperList = appendSuperNode(newSuperList, createSuperNode(createSubNode(ele)));
+                }
+                
+                sublistExtracted = sublistExtracted -> prev;
+            }
+        }
+
+        superlist = superlist -> next;
     }
+
+    return Sort(newSuperList, size, abs(dir - 1));
 }
 
 int main() {
@@ -118,30 +200,24 @@ int main() {
     printf("Enter the number of elements: ");
     scanf("%d", &size);
 
-    struct subArr* head;
-    struct subArr* iterator = NULL;
+    SubArray* subArr = NULL;
 
-    bool isHeadAssigned = false;
-    printf("Enter the elements: \n");
+    printf("Enter the elements: ");
     for(int i = 0; i < size; i++) {
-        int key;
-        scanf("%d", &key);
+        int temp;
+        scanf("%d", &temp);
 
-        struct subArr* term = createNode(key, iterator);
-
-        if(!isHeadAssigned) {
-            head = term;
-            iterator = term;
-
-            isHeadAssigned = true;
-            continue;
-        }
-
-        iterator = term;
+        subArr = appendSubNode(subArr, createSubNode(temp));
     }
 
-    printf("The list: \n");
-    displayList(head);
+    SuperArray* supArr = NULL;
+    supArr = appendSuperNode(supArr, createSuperNode(subArr));
+
+    printf("Sieve Sort: \n");
+    SuperArray* sortedArray = Sort(supArr, size, 0);
+
+    printf("\nSorted Array: \n");
+    displaySuperList(sortedArray);
 
     return 0;
 }
