@@ -23,20 +23,33 @@ SubArray* createSubNode(int data) {
     return temp;
 }
 
-SubArray* appendSubNode(SubArray* head, SubArray* node) {
+SubArray* appendSubNode(SubArray* head, SubArray* node, int dir) {
     if(head == NULL) {
         head = node;
         return head;
     }
 
     SubArray* tmp = head;
-    while(head -> next != NULL)
-    {
-        head = head -> next;
-    }
+    if(dir == 0) {
+        while(head -> next != NULL)
+        {
+            head = head -> next;
+        }
 
-    head -> next = node;
-    node -> prev = head;
+        head -> next = node;
+        node -> prev = head;
+    }
+    else if(dir == 1) {
+        while(head -> prev != NULL)
+        {
+            head = head -> prev;
+        }
+
+        head -> prev = node;
+        node -> next = head;
+
+        tmp = node;
+    }
 
     return tmp;
 }
@@ -141,7 +154,7 @@ SuperArray* Sort(SuperArray* superlist, int size, int dir) {
                 while (tempNewSuperIterator != NULL)
                 {
                     if(ele < tempNewSuperIterator -> list -> key) {
-                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele));
+                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele), dir);
                         isAssigned = true;
                         break;
                     }
@@ -173,7 +186,7 @@ SuperArray* Sort(SuperArray* superlist, int size, int dir) {
                 while (tempNewSuperIterator != NULL)
                 {
                     if(ele < tempNewSuperIterator -> list -> key) {
-                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele));
+                        tempNewSuperIterator -> list = appendSubNode(tempNewSuperIterator -> list, createSubNode(ele), dir);
                         isAssigned = true;
                         break;
                     }
@@ -207,7 +220,7 @@ int main() {
         int temp;
         scanf("%d", &temp);
 
-        subArr = appendSubNode(subArr, createSubNode(temp));
+        subArr = appendSubNode(subArr, createSubNode(temp), 0);
     }
 
     SuperArray* supArr = NULL;
