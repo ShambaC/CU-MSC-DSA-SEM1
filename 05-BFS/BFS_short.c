@@ -70,6 +70,7 @@ int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
 
     int queue[size];
     queue[++rear] = adjList[src] -> head -> vertex;
+    // initialize the distance
     dist[src] = 0;
 
     while(front <= rear) {
@@ -78,17 +79,23 @@ int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
 
         while(listHead != NULL) {
             if(!visited[listHead -> vertex]) {
+                // Add node to queue
                 queue[++rear] = listHead -> vertex;
+                // Set its visited to 1
                 visited[listHead -> vertex] = 1;
+                // Store the distance of the node from the root node
                 dist[listHead -> vertex] = dist[queue[front]]  + 1;
+                // Add the parent
                 pred[listHead -> vertex] = queue[front];
             }
+            // Reach target
             if(listHead -> vertex == dest) {
                 return 1;
             }
 
             listHead = listHead -> next;
         }
+        // Dequeue
         front++;
     }
 
@@ -105,7 +112,7 @@ void findShortestPath(List* adjList[], int src, int dst, int size) {
         return;
     }
 
-    // Backtracking
+    // Backtracking preds
     int path[size];
     int crawl = dst;
     int pathCounter = -1;
