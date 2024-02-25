@@ -44,32 +44,27 @@ void DisplayAdjList(List* adjList[], int size) {
     }
 }
 
-int front = -1;
+int front = 0;
 int rear = -1;
-int count = 0;
 
-void BFS(List* adjList[], int size, int start, int visited[], int queue[]) {
-    if(front > rear) {
-        return;
-    }
+void BFS(List* adjList[], int start, int visited[], int queue[]) {
+    
+    queue[++rear] = adjList[start] -> head -> vertex;
 
-    Node* listHead = adjList[start] -> head;
-    printf("%d", listHead -> vertex);
-    visited[listHead -> vertex] = 1;
-    count++;
+    while(front <= rear) {
+        Node* listHead = adjList[queue[front]] -> head;
+        printf("%d->", listHead -> vertex);
+        visited[listHead -> vertex] = 1;
 
-    while(listHead != NULL) {
-        if(!visited[listHead -> vertex]) {
-            queue[++rear] = listHead -> vertex;
-            visited[listHead -> vertex] = 1;
+        while(listHead != NULL) {
+            if(!visited[listHead -> vertex]) {
+                queue[++rear] = listHead -> vertex;
+                visited[listHead -> vertex] = 1;
+            }
+
+            listHead = listHead -> next;
         }
-
-        listHead = listHead -> next;
-    }
-
-    if(count != size) {
-        printf("->");
-        BFS(adjList, size, queue[++front], visited, queue);
+        front++;
     }
 }
 
@@ -94,7 +89,7 @@ int main() {
         scanf("%d%d", &src, &dst);
 
         if(src == -1 || dst == -1) {
-            printf("Stopping");
+            printf("Stopping\n");
             break;
         }
 
@@ -109,7 +104,7 @@ int main() {
     scanf("%d", &start);
 
     printf("BFS of the graph: \n");
-    BFS(adjList, size, start, visited, queue);
+    BFS(adjList, start, visited, queue);
 
     return 0;
 }
