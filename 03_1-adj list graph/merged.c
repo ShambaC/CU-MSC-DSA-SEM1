@@ -106,6 +106,7 @@ int main() {
             break;
         }
 
+        // initialize the weight of the edge
         int w = -1;
         if(choice == 2 || choice == 4) {
             printf("Enter the wright for the edge: ");
