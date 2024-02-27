@@ -37,8 +37,6 @@ int main() {
     printf("Enter the number of digits in the binary number: ");
     scanf("%d", &n);
 
-    unsigned int num = 0;
-
     int t_i = 0;
     int c_i = 0;
     int c_i_prev = 0;
@@ -47,20 +45,19 @@ int main() {
 
     for(int i = 0; i < (1 << n); i++) {
         printf("%d\t", i);
-        printf("%0*d\t\t", n, dec2bin(num));
+        printf("%0*d\t\t", n, dec2bin(i));
 
-        int prev_num = num == 0 ? 0 : num - 1;
-        t_i = countCost(prev_num, num);
+        int prev_num = i == 0 ? 0 : i - 1;
+        t_i = countCost(prev_num, i);
         printf("%d\t", t_i);
 
-        c_i = count1s(num);
+        c_i = count1s(i);
         printf("%d\t", c_i);
 
         int a_i = t_i + c_i - c_i_prev;
         printf("%d\t\n", a_i);
 
         c_i_prev = c_i;
-        num++;
     }
 
     return 0;
