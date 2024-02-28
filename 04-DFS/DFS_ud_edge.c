@@ -19,7 +19,7 @@ Node* createNode(int vertex) {
     return node;
 }
 
-void addEdge(List* adjList[], int src, int dst) {
+void addEdge(List* adjList[], int src, int dst, int isDir) {
     Node* tmp = adjList[src] -> head;
     while(tmp -> next != NULL) {
         tmp = tmp -> next;
@@ -28,13 +28,15 @@ void addEdge(List* adjList[], int src, int dst) {
     Node* dstNode = createNode(dst);
     tmp -> next = dstNode;
 
-    tmp = adjList[dst] -> head;
-    while(tmp -> next != NULL) {
-        tmp = tmp -> next;
-    }
+    if(!isDir) {
+        tmp = adjList[dst] -> head;
+        while(tmp -> next != NULL) {
+            tmp = tmp -> next;
+        }
 
-    Node* srcNode = createNode(src);
-    tmp -> next = srcNode;
+        Node* srcNode = createNode(src);
+        tmp -> next = srcNode;
+    }
 }
 
 int lenNodeList(Node* listHead) {
@@ -132,6 +134,10 @@ int main() {
         DFSPred[i] = -1;
     }
 
+    int dir = 0;
+    printf("Choose the type of graph:\n1. Undirected graph\n2. Directed Graph\nEnter choice: ");
+    scanf("%d", &dir);
+
     while(1) {
         int src, dst;
         printf("Enter edge as (source destination) (Enter -1 -1 to stop): ");
@@ -142,7 +148,7 @@ int main() {
             break;
         }
 
-        addEdge(adjList, src, dst);
+        addEdge(adjList, src, dst, dir-1);
     }
 
     SortAdjList(adjList, size);
@@ -156,7 +162,18 @@ int main() {
 
     printf("DFS of the graph: \n");
     DFS(adjList, start, visited, DFSnum, DFScompNum, DFSPred, -1);
+    printf("\n");
     DFScompNum[start] = ++DFScompCount;
+
+    // DFS for the remaining vertices
+    for(int i = 0; i < size; i++) {
+        if(visited[i])
+            continue;
+        
+        DFS(adjList, i, visited, DFSnum, DFScompNum, DFSPred, -1);
+        printf("\n");
+        DFScompNum[i] = ++DFScompCount;
+    }
 
     printf("\n(DFS number / completion number) for elements: \n");
     for(int i = 0; i < size; i++) {
@@ -171,9 +188,10 @@ int main() {
             if(DFSnum[j] == i + 1) {
                 a = j;
                 b = DFSPred[j];
+                break;
             }
         }
-        if(a != -1 && b != -1 && isEdge(a, b, adjList)) {
+        if(a != -1 && b != -1 && isEdge(b, a, adjList)) {
             printf("{%d, %d} ", b, a);
         }
     }
@@ -190,25 +208,51 @@ int main() {
     }
 
     printf("\nBack edges: ");
-    for(int i = 1; i < size; i++) {
-        int a = -1;
-        int b = -1;
-        for(int j = 0; j < size; j++) {
-            if(DFSnum[j] == i + 1) {
-                a = j;
-                b = DFSPred[j];
+    if(dir == 1) {
+        for(int i = 1; i < size; i++) {
+            int a = -1;
+            int b = -1;
+            for(int j = 0; j < size; j++) {
+                if(DFSnum[j] == i + 1) {
+                    a = j;
+                    b = DFSPred[j];
+                }
+            }
+            if(a != -1 && b != -1 && isEdge(a, b, adjList)) {
+                printf("{%d, %d} ", a, b);
             }
         }
-        if(a != -1 && b != -1 && isEdge(a, b, adjList)) {
-            printf("{%d, %d} ", a, b);
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                if(i == j)
+                    continue;
+                if(DFSnum[j] > DFSnum[i] && DFScompNum[j] < DFScompNum[i] && isEdge(j, i, adjList) && i != DFSPred[j] && j != DFSPred[i]) {
+                    printf("{%d, %d} ", j, i);
+                }
+            }
         }
     }
-    for(int i = 0; i < size; i++) {
-        for(int j = 0; j < size; j++) {
-            if(i == j)
-                continue;
-            if(DFSnum[j] > DFSnum[i] && DFScompNum[j] < DFScompNum[i] && isEdge(i, j, adjList) && i != DFSPred[j] && j != DFSPred[i]) {
-                printf("{%d, %d} ", j, i);
+    else {
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                if(i == j)
+                    continue;
+                if(DFSnum[j] < DFSnum[i] && DFScompNum[j] > DFScompNum[i] && isEdge(i, j, adjList) && i != DFSPred[j] && j != DFSPred[i]) {
+                    printf("{%d, %d} ", i, j);
+                }
+            }
+        }
+    }
+
+    if(dir == 2) {
+        printf("\nCross edges: ");
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                if(i == j)
+                    continue;
+                if(DFSnum[j] < DFSnum[i] && DFScompNum[j] < DFScompNum[i] && isEdge(i, j, adjList) && i != DFSPred[j] && j != DFSPred[i]) {
+                    printf("{%d, %d} ", j, i);
+                }
             }
         }
     }
