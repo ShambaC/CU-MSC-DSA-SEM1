@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
+
 #include<stdbool.h>
+#include<math.h>
 
 typedef struct Key {
     int key;
@@ -63,7 +65,7 @@ Node* createNode(int key) {
     return node;
 }
 
-Node* insertNode(int key, Node* root, int order) {
+Node* insertNode(int key, Node* root) {
     Node* iterator = root;
 
     if(root == NULL) {
@@ -121,5 +123,17 @@ Node* insertNode(int key, Node* root, int order) {
             break;
         }
     }
-    
+    return root;    
+}
+
+Node* balanceTree(Node* root, int order) {
+    Node* iterator = root;
+
+    while(iterator != NULL) {
+        if(lenKeys(iterator -> keys) == order) {
+            if(iterator -> prev != NULL) {
+                int median = ceil(order / 2.0f);
+            }
+        }
+    }
 }
