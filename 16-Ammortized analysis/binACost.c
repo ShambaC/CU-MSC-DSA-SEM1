@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-unsigned  dec2bin(unsigned int k) {
+unsigned int dec2bin(unsigned int k) {
     return (k == 0 || k == 1 ? k : ((k % 2) + 10 * dec2bin(k / 2)));
 }
 
