@@ -38,6 +38,34 @@ int lenLinks(Links* head) {
     return count;
 }
 
+Key* popKey(Key* head, int index) {
+    Key* iterator = head;
+    bool isExist = false;
+    int count = 0;
+
+    while(iterator != NULL) {
+        if(count == index) {
+            isExist = true;
+            break;
+        }
+        count++;
+        iterator = iterator -> next;
+    }
+
+    if(!isExist) {
+        return NULL;
+    }
+    else {
+
+        for(int i = 0; i < count; i++) {
+            head = head -> next;
+        }
+        head -> next = iterator -> next;
+        iterator -> next = NULL;
+        return iterator;
+    }
+}
+
 Key* createKeys(int key) {
     Key* keys = (Key*) malloc(sizeof(Key));
 
@@ -132,7 +160,10 @@ Node* balanceTree(Node* root, int order) {
     while(iterator != NULL) {
         if(lenKeys(iterator -> keys) == order) {
             if(iterator -> prev != NULL) {
-                int median = ceil(order / 2.0f);
+                int median = floorf(order / 2.0f);
+                Key* keyToMove = popKey(iterator -> keys, median);
+
+                Node* prevNode = iterator -> prev;
             }
         }
     }
