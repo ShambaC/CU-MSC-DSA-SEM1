@@ -181,6 +181,9 @@ Node* balanceTree(Node* root, int order) {
                 }
 
                 insertKey(prevNode, keyToMove, prevKeyCount);
+                /*
+                    TODO split node
+                */
             }
         }
     }
