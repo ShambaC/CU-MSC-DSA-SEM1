@@ -38,6 +38,24 @@ int lenLinks(Links* head) {
     return count;
 }
 
+void insertKey(Node* node, Key* keyToInsert, int pos) {
+    if(pos == 0) {
+        keyToInsert -> next = node -> keys;
+        node -> keys = keyToInsert;
+    }
+    else {
+        int keyCount = -1;
+        Key* keyIterator = node -> keys;
+        while(keyIterator != NULL) {
+            keyCount++;
+            if(pos == keyCount + 1) {
+                keyToInsert -> next = keyIterator -> next;
+                keyIterator -> next = keyToInsert;
+            }
+        }
+    }
+}
+
 Key* popKey(Key* head, int index) {
     Key* iterator = head;
     bool isExist = false;
@@ -131,21 +149,7 @@ Node* insertNode(int key, Node* root) {
         }
         else {
             Key* newKey = createKeys(key);
-            if(insertPos == 0) {
-                newKey -> next = iterator -> keys;
-                iterator -> keys = newKey;
-            }
-            else {
-                keyCount = -1;
-                keyIterator = iterator -> keys;
-                while(keyIterator != NULL) {
-                    keyCount++;
-                    if(insertPos == keyCount + 1) {
-                        newKey -> next = keyIterator -> next;
-                        keyIterator -> next = newKey;
-                    }
-                }
-            }
+            insertKey(iterator, newKey, insertPos);
 
             isInserted = true;
             break;
@@ -164,6 +168,19 @@ Node* balanceTree(Node* root, int order) {
                 Key* keyToMove = popKey(iterator -> keys, median);
 
                 Node* prevNode = iterator -> prev;
+                Key* prevKeyIterator = prevNode -> keys;
+                int prevKeyCount = 0;
+                while(prevKeyIterator != NULL) {
+                    if(keyToMove -> key > prevKeyIterator -> key) {
+                        prevKeyCount++;
+                    }
+                    else {
+                        break;
+                    }
+                    prevKeyIterator = prevKeyIterator -> next;
+                }
+
+                insertKey(prevNode, keyToMove, prevKeyCount);
             }
         }
     }
