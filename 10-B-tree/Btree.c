@@ -111,6 +111,36 @@ Node* createNode(int key) {
     return node;
 }
 
+Node** splitNode(Node* head, int pos) {
+    Node* splitResult[2];
+
+    Key* keyIter = head -> keys;
+    Links* linkIter = head -> links;
+
+    splitResult[0] = (Node*) malloc(sizeof(Node));
+    splitResult[1] = (Node*) malloc(sizeof(Node));
+
+    splitResult[0] -> keys = keyIter;
+    splitResult[0] -> links = linkIter;
+    splitResult[0] -> prev = head -> prev;
+
+    for(int i = 0; i < pos; i++) {
+        keyIter = keyIter -> next;
+        linkIter = linkIter -> next;
+    }
+
+    linkIter = linkIter -> next;
+
+    splitResult[1] -> keys = keyIter -> next;
+    splitResult[1] -> links = linkIter -> next;
+    splitResult[1] -> prev = head -> prev;
+
+    keyIter -> next = NULL;
+    linkIter -> next = NULL;
+
+    return splitResult;
+}
+
 Node* insertNode(int key, Node* root) {
     Node* iterator = root;
 
@@ -169,6 +199,7 @@ Node* balanceTree(Node* root, int order) {
 
                 Node* prevNode = iterator -> prev;
                 Key* prevKeyIterator = prevNode -> keys;
+                Links* prevLinkIterator = prevNode -> links;
                 int prevKeyCount = 0;
                 while(prevKeyIterator != NULL) {
                     if(keyToMove -> key > prevKeyIterator -> key) {
@@ -178,12 +209,16 @@ Node* balanceTree(Node* root, int order) {
                         break;
                     }
                     prevKeyIterator = prevKeyIterator -> next;
+                    prevLinkIterator = prevLinkIterator -> next;
                 }
 
                 insertKey(prevNode, keyToMove, prevKeyCount);
-                /*
-                    TODO split node
-                */
+                Node* splitResult[] = splitNode(iterator, median);
+                prevLinkIterator -> link = splitResult[0];
+                Links* newLink = createLinks();
+                newLink -> link = splitResult[1];
+                newLink -> next = prevLinkIterator -> next;
+                prevLinkIterator -> next = newLink;
             }
         }
     }
