@@ -251,7 +251,7 @@ int main() {
                 if(i == j)
                     continue;
                 if(DFSnum[j] < DFSnum[i] && DFScompNum[j] < DFScompNum[i] && isEdge(i, j, adjList) && i != DFSPred[j] && j != DFSPred[i]) {
-                    printf("{%d, %d} ", j, i);
+                    printf("{%d, %d} ", i, j);
                 }
             }
         }
