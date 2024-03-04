@@ -60,7 +60,7 @@ int front = 0;
 int rear = -1;
 
 int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
-    
+    int isFound = 0;
     int visited[size];
     for(int i = 0; i < size; i++) {
         visited[i] = 0;
@@ -75,6 +75,7 @@ int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
 
     while(front <= rear) {
         Node* listHead = adjList[queue[front]] -> head;
+        printf("%d->", listHead -> vertex);
         visited[listHead -> vertex] = 1;
 
         while(listHead != NULL) {
@@ -90,7 +91,7 @@ int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
             }
             // Reach target
             if(listHead -> vertex == dest) {
-                return 1;
+                isFound = 1;
             }
 
             listHead = listHead -> next;
@@ -99,7 +100,7 @@ int BFS(List* adjList[], int size, int src, int dest, int pred[], int dist[]) {
         front++;
     }
 
-    return 0;
+    return isFound;
 }
 
 void findShortestPath(List* adjList[], int src, int dst, int size) {
@@ -165,6 +166,7 @@ int main() {
     printf("Enter the nodes to find path between: ");
     scanf("%d%d", &src, &dst);
 
+    printf("BFS of the graph: \n");
     findShortestPath(adjList, src, dst, size);
 
     return 0;
