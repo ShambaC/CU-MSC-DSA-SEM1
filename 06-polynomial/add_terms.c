@@ -70,6 +70,22 @@ int* sum(int* A, int* B, int sizeA, int sizeB)
     return res;
 }
 
+void sortPoly(int* poly, int size) {
+    size *= 2;
+    for(int i = 1; i < size - 1; i+=2) {
+        for(int j = 1; j < size - i - 1; j+=2) {
+            if(poly[i] > poly[i+2]) {
+                int tmpCoeff = poly[i-1];
+                int tmpPow = poly[i];
+                poly[i-1] = poly[i+1];
+                poly[i] = poly[i+2];
+                poly[i+1] = tmpCoeff;
+                poly[i+2] = tmpPow;
+            }
+        }
+    }
+}
+
 void displayPoly(int* A, int size)
 {
     size *= 2;
@@ -103,10 +119,13 @@ int main()
     int* res = sum(expA, expB, m, n);
 
     printf("\nPolynomial 1: ");
+    sortPoly(expA, m);
     displayPoly(expA, m);
     printf("\nPolynomial 2: ");
+    sortPoly(expB, n);
     displayPoly(expB, n);
     printf("\nSum: ");
+    sortPoly(res, m+n);
     displayPoly(res, m+n);
 
     return 0;
