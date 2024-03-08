@@ -43,6 +43,10 @@ void printExp(struct term* Term)
     }
 }
 
+void sortExp(struct term* Term, int size) {
+
+}
+
 struct term* add(struct term* expA, struct term* expB)
 {
     struct term* headA = expA;
