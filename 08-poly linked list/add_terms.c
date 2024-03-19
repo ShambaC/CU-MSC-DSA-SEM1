@@ -18,8 +18,40 @@ struct term* createTerm(int pow, int coeff)
     return Term;
 }
 
+int lenExp(struct term* Term) {
+    int size = 0;
+    while (Term != NULL)
+    {
+        size++;
+        Term = Term -> next;
+    }
+    return size;
+}
+
+void sortExp(struct term* Exp) {
+    struct term* Term = Exp;
+    int size = lenExp(Term);
+
+    for(int i = 0; i < size - 1; i++) {
+            for(int j = 0; j < size - i - 1; j++) {
+                if(Term -> pow < Term -> next -> pow) {
+                    int temp = Term -> pow;
+                    Term -> pow = Term -> next -> pow;
+                    Term -> next -> pow = temp;
+
+                    temp = Term -> coeff;
+                    Term -> coeff = Term -> next -> coeff;
+                    Term -> next -> coeff = temp;
+                }
+                Term = Term -> next;
+            }
+        }
+}
+
 void printExp(struct term* Term)
 {
+    sortExp(Term);
+
     while(1)
     {
         if(Term -> coeff != 0) {
@@ -41,10 +73,6 @@ void printExp(struct term* Term)
 
         break;
     }
-}
-
-void sortExp(struct term* Term, int size) {
-
 }
 
 struct term* add(struct term* expA, struct term* expB)

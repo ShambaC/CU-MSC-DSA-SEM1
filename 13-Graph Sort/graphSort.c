@@ -35,10 +35,10 @@ int** createGraph(int *array, int size)
 
 void displayGraph(int **graph, int *array, int size)
 {
-    printf("X ");
+    printf("X\t");
     for(int i = 0; i < size; i++)
     {
-        printf("%d ", array[i]);
+        printf("%d\t", array[i]);
     }
     printf("\n");
 
@@ -48,10 +48,10 @@ void displayGraph(int **graph, int *array, int size)
         {
             if(j == -1)
             {
-                printf("%d ", array[i]);
+                printf("%d\t", array[i]);
                 continue;
             }
-            printf("%d ", graph[i][j]);
+            printf("%d\t", graph[i][j]);
         }
 
         printf("\n");
@@ -94,7 +94,8 @@ void graphSort(int **graph, int* array, int size)
         // Remove that source from the graph
         for(int i = 0; i < size; i++)
         {
-            graph[sourceList[sourceListCounter]][i] = 0;
+            if(graph[sourceList[sourceListCounter]][i] != -1)
+                graph[sourceList[sourceListCounter]][i] = 0;
             graph[i][sourceList[sourceListCounter]] = -1;
         }
 
