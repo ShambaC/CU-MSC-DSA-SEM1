@@ -63,16 +63,22 @@ void swap(Node* a, Node* b) {
     a -> left = b;
     b -> right = a;
     
+    // a and b are now swapped
+    // now make the elements on either side of a and b point to the correct swapped elements
     if(b -> left != NULL)
         b -> left -> right = b;
     if(a -> right != NULL)
         a -> right -> left = a;
 }
 
+// sort the binomial heap on the basis of order of the binomial trees
 Node* sortHeap(Node* head) {
     Node* iterator = head;
     int len = heapLen(head);
+
+    // bubble sort
     for(int i = 0; i < len - 1; i++) {
+        // reset iterator to the beginning of the heap
         while(iterator -> left != NULL) {
             iterator = iterator -> left;
         }
@@ -95,6 +101,7 @@ Node* sortHeap(Node* head) {
     return iterator;
 }
 
+// Insert to the left
 Node* insert(Node* head, Node* node) {
     node -> right = head;
     head -> left = node;
@@ -102,26 +109,37 @@ Node* insert(Node* head, Node* node) {
     return head;
 }
 
+// Iterate through the heap to find trees of same order and merge them
 Node* merge(Node* head) {
     Node* iterator = head;
 
+    // Iterating through the heap
     while(iterator -> right != NULL) {
+        // get the right sibling
         Node* sib = iterator -> right;
+        // if the trees are of same order
         if(iterator -> order == sib -> order) {
             // right tree goes down
             if(iterator -> key < sib -> key) {
+                // 'sib' tree is going down and merging with 'iterator' tree as a child, hence check if iterator has any child
                 if(iterator -> child != NULL) {
+                    // get current child
                     Node* childNode = iterator -> child;
 
+                    // make sibling child
                     iterator -> child = sib;
+                    //remove sibling from main heap
                     iterator -> right = sib -> right;
 
+                    // set the previous child next to new child (sibling)
                     sib -> right = childNode;
                     sib -> left = NULL;
 
                     childNode -> left = sib;
                 }
+                // if there are no children
                 else {
+                    // simply make the sibling a child
                     iterator -> child = sib;
                     iterator -> right = sib -> right;
 
@@ -186,6 +204,7 @@ Node* extractMin(Node* head) {
     Node* min = head;
     Node* iterator = head;
 
+    // find minimum root
     while(iterator != NULL) {
         if(iterator -> key < min -> key) {
             min = iterator;
@@ -251,6 +270,7 @@ void displayHeap(Node* head) {
             }
             printf("%d\t", currNode -> key);
 
+            // go to next line when a level of tree has finished displaying
             nodeCountAtDepth++;
             int nodesAtDepth_i = nCr(height, depth);
             if(nodeCountAtDepth >= nodesAtDepth_i) {
@@ -259,6 +279,7 @@ void displayHeap(Node* head) {
                 printf("\n");
             }
             
+            // Add adjacent nodes to queue
             Node* childIterator = currNode -> child;
             while(childIterator != NULL) {
                 BFSQueue[++rear] = childIterator;
