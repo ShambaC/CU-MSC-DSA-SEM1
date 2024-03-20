@@ -279,7 +279,7 @@ void displayHeap(Node* head) {
                 printf("\n");
             }
             
-            // Add adjacent nodes to queue
+            // Add adjacent nodes to queue 
             Node* childIterator = currNode -> child;
             while(childIterator != NULL) {
                 BFSQueue[++rear] = childIterator;

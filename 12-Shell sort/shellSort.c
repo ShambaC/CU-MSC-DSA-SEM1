@@ -1,6 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+void displayArray(int* array, int size)
+{
+    printf("\n");
+    for(int i = 0; i < size; i++)
+    {
+        printf("%d ", array[i]);
+    }
+}
+
 void shellSort(int* array, int n)
 {
     for(int interval = 5; interval > 0; interval -= 2)
@@ -17,15 +26,6 @@ void shellSort(int* array, int n)
             array[j] = temp;
             displayArray(array, n);
         }
-    }
-}
-
-void displayArray(int* array, int size)
-{
-    printf("\n");
-    for(int i = 0; i < size; i++)
-    {
-        printf("%d ", array[i]);
     }
 }
 
